@@ -5,9 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "geodatasets>=2026.1.0",
     "geopandas>=1.1.2",
     "matplotlib>=3.10.8",
     "pandas>=3.0.0",
+    "pydantic>=2.13.2",
     "requests>=2.32.5",
 ]
 
@@ -15,4 +17,9 @@ dependencies = [
 dev = [
     "ipykernel>=7.2.0",
     "pre-commit>=4.5.1",
+    "ty>=0.0.31",
 ]
+
+[tool.ty.environment]
+python = "./.venv"
+

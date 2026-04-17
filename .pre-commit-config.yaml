@@ -19,3 +19,10 @@ repos:
   - id: conventional-pre-commit
     stages: [commit-msg]
     args: [ --verbose]
+repos:
+- repo: https://github.com/NSPBot911/ty-pre-commit # when official support for ty comes online, change to that
+  # ty version.
+  rev: v0.0.31
+  hooks:
+    # Run the linter.
+    - id: ty-check
