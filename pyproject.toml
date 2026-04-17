@@ -21,5 +21,4 @@ dev = [
 ]
 
 [tool.ty.environment]
-python = "./.venv"
-
+python = "./.venv"  # seems unnessecary, but pre-commit fails otherwise (even if it works in the console)
