@@ -1,0 +1,3277 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.3.4"
+    },
+    "servers": [
+        {
+            "url": "/v1"
+        }
+    ],
+    "paths": {
+        "/datasets": {
+            "get": {
+                "tags": [
+                    "all datasets"
+                ],
+                "summary": "View And Filter All Available Datasets",
+                "operationId": "View_and_filter_all_available_datasets_datasets_get",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/EndpointType"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Type"
+                        }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/EndpointMode"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Mode"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/Dataset"
+                                    },
+                                    "title": "Response View And Filter All Available Datasets Datasets Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grid/historical/{resource_id}/metadata": {
+            "get": {
+                "tags": [
+                    "grid",
+                    "historical",
+                    "metadata"
+                ],
+                "summary": "Historical Grid Metadata",
+                "operationId": "Historical_Grid_Metadata_grid_historical__resource_id__metadata_get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "inca-v1-1h-1km"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "inca-v1-1h-1km"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GridHistoricalMetadataModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grid/historical/{resource_id}/metadata/parameters": {
+            "get": {
+                "tags": [
+                    "grid",
+                    "historical",
+                    "metadata"
+                ],
+                "summary": "Historical Grid Parameter Metadata Csv",
+                "operationId": "Historical_Grid_Parameter_Metadata_CSV_grid_historical__resource_id__metadata_parameters_get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "inca-v1-1h-1km"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "inca-v1-1h-1km"
+                    },
+                    {
+                        "name": "filename",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filename without file extension",
+                            "title": "Filename"
+                        },
+                        "description": "Filename without file extension"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grid/historical/{resource_id}": {
+            "get": {
+                "tags": [
+                    "grid",
+                    "historical"
+                ],
+                "summary": "Historical Grid Data",
+                "operationId": "Historical_Grid_Data_grid_historical__resource_id__get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "inca-v1-1h-1km"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "inca-v1-1h-1km"
+                    },
+                    {
+                        "name": "parameters",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "At least one parameter has to be specified.",
+                            "examples": [
+                                [
+                                    "RR"
+                                ]
+                            ],
+                            "title": "Parameters"
+                        },
+                        "description": "At least one parameter has to be specified.",
+                        "example": [
+                            "RR"
+                        ]
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "Start"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "End"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "bbox",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Supply in format *south,west,north,east*",
+                            "examples": [
+                                "47.45,14.05,47.50,14.10"
+                            ],
+                            "title": "Bbox"
+                        },
+                        "description": "Supply in format *south,west,north,east*",
+                        "example": "47.45,14.05,47.50,14.10"
+                    },
+                    {
+                        "name": "output_format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/OutputFormat",
+                            "default": "geojson"
+                        }
+                    },
+                    {
+                        "name": "filename",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filename without file extension",
+                            "title": "Filename"
+                        },
+                        "description": "Filename without file extension"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GridGeoJSONSerializer"
+                                }
+                            },
+                            "application/x-netcdf": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "byte"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grid/forecast/{resource_id}/metadata": {
+            "get": {
+                "tags": [
+                    "grid",
+                    "forecast",
+                    "metadata"
+                ],
+                "summary": "Grid Forecast Metadata",
+                "operationId": "Grid_Forecast_Metadata_grid_forecast__resource_id__metadata_get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "nwp-v1-1h-2500m"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "nwp-v1-1h-2500m"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GridForecastMetadataModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grid/forecast/{resource_id}": {
+            "get": {
+                "tags": [
+                    "grid",
+                    "forecast"
+                ],
+                "summary": "Grid Forecast Data",
+                "operationId": "Grid_Forecast_Data_grid_forecast__resource_id__get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "nwp-v1-1h-2500m"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "nwp-v1-1h-2500m"
+                    },
+                    {
+                        "name": "parameters",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "At least one parameter has to be specified.",
+                            "examples": [
+                                "t2m"
+                            ],
+                            "title": "Parameters"
+                        },
+                        "description": "At least one parameter has to be specified.",
+                        "example": "t2m"
+                    },
+                    {
+                        "name": "bbox",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Supply in format *south,west,north,east*",
+                            "examples": [
+                                "47.45,14.05,47.50,14.10"
+                            ],
+                            "title": "Bbox"
+                        },
+                        "description": "Supply in format *south,west,north,east*",
+                        "example": "47.45,14.05,47.50,14.10"
+                    },
+                    {
+                        "name": "forecast_offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "description": "This parameter allows to access historical forecasts. If this parameter is not set the most recently created forecast is returned. If an integer value is given an older forecast is returned, where value is the 'age' of the forecast. 0 is the most recent forecast, 1 is the second to last forecast, and so on.",
+                            "examples": [
+                                0
+                            ],
+                            "default": 0,
+                            "title": "Forecast Offset"
+                        },
+                        "description": "This parameter allows to access historical forecasts. If this parameter is not set the most recently created forecast is returned. If an integer value is given an older forecast is returned, where value is the 'age' of the forecast. 0 is the most recent forecast, 1 is the second to last forecast, and so on.",
+                        "example": 0
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "Start"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "End"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "output_format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/OutputFormat",
+                            "default": "geojson"
+                        }
+                    },
+                    {
+                        "name": "filename",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filename without file extension",
+                            "title": "Filename"
+                        },
+                        "description": "Filename without file extension"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GridForecastGeoJSONSerializer"
+                                }
+                            },
+                            "application/x-netcdf": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "byte"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/timeseries/historical/{resource_id}/metadata": {
+            "get": {
+                "tags": [
+                    "timeseries",
+                    "historical",
+                    "metadata"
+                ],
+                "summary": "Historical Timeseries Metadata",
+                "operationId": "Historical_Timeseries_Metadata_timeseries_historical__resource_id__metadata_get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "inca-v1-1h-1km"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "inca-v1-1h-1km"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GridHistoricalMetadataModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/timeseries/historical/{resource_id}": {
+            "get": {
+                "tags": [
+                    "timeseries",
+                    "historical"
+                ],
+                "summary": "Historical Timeseries",
+                "operationId": "Historical_Timeseries_timeseries_historical__resource_id__get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "inca-v1-1h-1km"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "inca-v1-1h-1km"
+                    },
+                    {
+                        "name": "parameters",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "At least one parameter has to be specified.",
+                            "examples": [
+                                [
+                                    "RR"
+                                ]
+                            ],
+                            "title": "Parameters"
+                        },
+                        "description": "At least one parameter has to be specified.",
+                        "example": [
+                            "RR"
+                        ]
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "Start"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "End"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "lat_lon",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "Strings of 'LAT,LON'.",
+                            "examples": [
+                                "48.206248,16.367569",
+                                "47.262886,11.394676"
+                            ],
+                            "title": "Lat Lon"
+                        },
+                        "description": "Strings of 'LAT,LON'.",
+                        "example": "48.206248,16.367569"
+                    },
+                    {
+                        "name": "output_format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/OutputFormat",
+                            "default": "geojson"
+                        }
+                    },
+                    {
+                        "name": "filename",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filename without file extension",
+                            "title": "Filename"
+                        },
+                        "description": "Filename without file extension"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TimeseriesGeoJSONSerializer"
+                                }
+                            },
+                            "text/csv": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/timeseries/forecast/{resource_id}/metadata": {
+            "get": {
+                "tags": [
+                    "timeseries",
+                    "forecast",
+                    "metadata"
+                ],
+                "summary": "Timeseries Forecast Metadata",
+                "operationId": "Timeseries_Forecast_Metadata_timeseries_forecast__resource_id__metadata_get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "nwp-v1-1h-2500m"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "nwp-v1-1h-2500m"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GridForecastMetadataModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/timeseries/forecast/{resource_id}": {
+            "get": {
+                "tags": [
+                    "timeseries",
+                    "forecast"
+                ],
+                "summary": "Timeseries Forecast",
+                "operationId": "Timeseries_Forecast_timeseries_forecast__resource_id__get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "nwp-v1-1h-2500m"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "nwp-v1-1h-2500m"
+                    },
+                    {
+                        "name": "parameters",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "At least one parameter has to be specified.",
+                            "examples": [
+                                [
+                                    "RR"
+                                ]
+                            ],
+                            "title": "Parameters"
+                        },
+                        "description": "At least one parameter has to be specified.",
+                        "example": [
+                            "RR"
+                        ]
+                    },
+                    {
+                        "name": "lat_lon",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "Strings of 'LAT,LON'.",
+                            "examples": [
+                                "48.206248,16.367569",
+                                "47.262886,11.394676"
+                            ],
+                            "title": "Lat Lon"
+                        },
+                        "description": "Strings of 'LAT,LON'.",
+                        "example": "48.206248,16.367569"
+                    },
+                    {
+                        "name": "forecast_offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "description": "This parameter allows to access historical forecasts. If this parameter is not set the most recently created forecast is returned. If an integer value is given an older forecast is returned, where value is the 'age' of the forecast. 0 is the most recent forecast, 1 is the second to last forecast, and so on.",
+                            "examples": [
+                                0
+                            ],
+                            "default": 0,
+                            "title": "Forecast Offset"
+                        },
+                        "description": "This parameter allows to access historical forecasts. If this parameter is not set the most recently created forecast is returned. If an integer value is given an older forecast is returned, where value is the 'age' of the forecast. 0 is the most recent forecast, 1 is the second to last forecast, and so on.",
+                        "example": 0
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "Start"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "End"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "output_format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/OutputFormat",
+                            "default": "geojson"
+                        }
+                    },
+                    {
+                        "name": "filename",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filename without file extension",
+                            "title": "Filename"
+                        },
+                        "description": "Filename without file extension"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TimeseriesForecastGeoJSONSerializer"
+                                }
+                            },
+                            "text/csv": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/station/{mode}/{resource_id}/filter": {
+            "get": {
+                "tags": [
+                    "station"
+                ],
+                "summary": "Filter Stations",
+                "operationId": "Filter_Stations_station__mode___resource_id__filter_get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "klima-v1-10min"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "klima-v1-10min"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/StationFilterEndpointMode"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "Restricts output to stations that have one of the given ids.",
+                            "title": "Id"
+                        },
+                        "description": "Restricts output to stations that have one of the given ids."
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "Restricts output to stations whose name contains one of the given strings.",
+                            "title": "Name"
+                        },
+                        "description": "Restricts output to stations whose name contains one of the given strings."
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/Bundesland"
+                            },
+                            "description": "Restricts output to stations who are located in one of the given states",
+                            "title": "State"
+                        },
+                        "description": "Restricts output to stations who are located in one of the given states"
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DD* or *YYYY-MM-DDTHH:mm*",
+                            "examples": [
+                                "2021-01-01"
+                            ],
+                            "title": "Start Date"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DD* or *YYYY-MM-DDTHH:mm*",
+                        "example": "2021-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DD* or *YYYY-MM-DDTHH:mm*",
+                            "examples": [
+                                "2021-01-01"
+                            ],
+                            "title": "End Date"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DD* or *YYYY-MM-DDTHH:mm*",
+                        "example": "2021-01-01"
+                    },
+                    {
+                        "name": "min_altitude",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "description": "Physical unit is *m*",
+                            "title": "Min Altitude"
+                        },
+                        "description": "Physical unit is *m*"
+                    },
+                    {
+                        "name": "max_altitude",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Physical unit is *m*",
+                            "title": "Max Altitude"
+                        },
+                        "description": "Physical unit is *m*"
+                    },
+                    {
+                        "name": "has_sunshine",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "title": "Has Sunshine"
+                        }
+                    },
+                    {
+                        "name": "has_global_radiation",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "title": "Has Global Radiation"
+                        }
+                    },
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "title": "Is Active"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StationFilterResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/station/historical/{resource_id}/metadata": {
+            "get": {
+                "tags": [
+                    "station",
+                    "historical",
+                    "metadata"
+                ],
+                "summary": "Historical Station Metadata",
+                "operationId": "Historical_Station_Metadata_station_historical__resource_id__metadata_get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "klima-v1-10min"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "klima-v1-10min"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StationHistoricalMetadataModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/station/historical/{resource_id}/metadata/{mdtype}": {
+            "get": {
+                "tags": [
+                    "station",
+                    "historical",
+                    "metadata"
+                ],
+                "summary": "Historical Station Metadata Csv",
+                "operationId": "Historical_Station_Metadata_CSV_station_historical__resource_id__metadata__mdtype__get",
+                "parameters": [
+                    {
+                        "name": "mdtype",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/MDType"
+                        }
+                    },
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "klima-v1-10min"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "klima-v1-10min"
+                    },
+                    {
+                        "name": "filename",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filename without file extension",
+                            "title": "Filename"
+                        },
+                        "description": "Filename without file extension"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/station/historical/{resource_id}": {
+            "get": {
+                "tags": [
+                    "station",
+                    "historical"
+                ],
+                "summary": "Historical Station Data",
+                "operationId": "Historical_Station_Data_station_historical__resource_id__get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "klima-v1-10min"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "klima-v1-10min"
+                    },
+                    {
+                        "name": "parameters",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "At least one parameter has to be specified.",
+                            "examples": [
+                                [
+                                    "RR"
+                                ]
+                            ],
+                            "title": "Parameters"
+                        },
+                        "description": "At least one parameter has to be specified.",
+                        "example": [
+                            "RR"
+                        ]
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "Start"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                            "examples": [
+                                "2021-01-01T00:00"
+                            ],
+                            "title": "End"
+                        },
+                        "description": "Supply in format: *YYYY-MM-DDThh:mm*. Time is optional.",
+                        "example": "2021-01-01T00:00"
+                    },
+                    {
+                        "name": "station_ids",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "At least one station id has to be specified.",
+                            "examples": [
+                                [
+                                    "5882"
+                                ]
+                            ],
+                            "title": "Station Ids"
+                        },
+                        "description": "At least one station id has to be specified.",
+                        "example": [
+                            "5882"
+                        ]
+                    },
+                    {
+                        "name": "output_format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/OutputFormat",
+                            "default": "geojson"
+                        }
+                    },
+                    {
+                        "name": "filename",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filename without file extension",
+                            "title": "Filename"
+                        },
+                        "description": "Filename without file extension"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StationGeoJSONSerializer"
+                                }
+                            },
+                            "text/csv": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/station/current/{resource_id}/metadata": {
+            "get": {
+                "tags": [
+                    "station",
+                    "current",
+                    "metadata"
+                ],
+                "summary": "Current Station Metadata",
+                "operationId": "Current_Station_Metadata_station_current__resource_id__metadata_get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "tawes-v1-10min"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "tawes-v1-10min"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StationCurrentMetadataModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/station/current/{resource_id}": {
+            "get": {
+                "tags": [
+                    "station",
+                    "current"
+                ],
+                "summary": "Current Station Data",
+                "operationId": "Current_Station_Data_station_current__resource_id__get",
+                "parameters": [
+                    {
+                        "name": "resource_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID of dataset",
+                            "examples": [
+                                "tawes-v1-10min"
+                            ],
+                            "title": "Resource Id"
+                        },
+                        "description": "ID of dataset",
+                        "example": "tawes-v1-10min"
+                    },
+                    {
+                        "name": "parameters",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "At least one parameter has to be specified.",
+                            "examples": [
+                                [
+                                    "RR"
+                                ]
+                            ],
+                            "title": "Parameters"
+                        },
+                        "description": "At least one parameter has to be specified.",
+                        "example": [
+                            "RR"
+                        ]
+                    },
+                    {
+                        "name": "station_ids",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "At least one station id has to be specified.",
+                            "examples": [
+                                [
+                                    "11035"
+                                ]
+                            ],
+                            "title": "Station Ids"
+                        },
+                        "description": "At least one station id has to be specified.",
+                        "example": [
+                            "11035"
+                        ]
+                    },
+                    {
+                        "name": "output_format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/OutputFormat",
+                            "default": "geojson"
+                        }
+                    },
+                    {
+                        "name": "filename",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Filename without file extension",
+                            "title": "Filename"
+                        },
+                        "description": "Filename without file extension"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StationGeoJSONSerializer"
+                                }
+                            },
+                            "text/csv": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Bundesland": {
+                "type": "string",
+                "enum": [
+                    "Burgenland",
+                    "Kärnten",
+                    "Niederösterreich",
+                    "Oberösterreich",
+                    "Salzburg",
+                    "Steiermark",
+                    "Tirol",
+                    "Vorarlberg",
+                    "Wien"
+                ],
+                "title": "Bundesland"
+            },
+            "CodeListItem": {
+                "properties": {
+                    "key": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Key"
+                    },
+                    "value": {
+                        "type": "string",
+                        "title": "Value"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "key",
+                    "value"
+                ],
+                "title": "CodeListItem"
+            },
+            "Dataset": {
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/EndpointType"
+                    },
+                    "mode": {
+                        "$ref": "#/components/schemas/EndpointMode"
+                    },
+                    "response_formats": {
+                        "items": {
+                            "$ref": "#/components/schemas/OutputFormat"
+                        },
+                        "type": "array",
+                        "title": "Response Formats"
+                    },
+                    "url": {
+                        "type": "string",
+                        "title": "Url"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "type",
+                    "mode",
+                    "response_formats",
+                    "url"
+                ],
+                "title": "Dataset"
+            },
+            "EndpointMode": {
+                "type": "string",
+                "enum": [
+                    "historical",
+                    "current",
+                    "forecast"
+                ],
+                "title": "EndpointMode"
+            },
+            "EndpointType": {
+                "type": "string",
+                "enum": [
+                    "grid",
+                    "timeseries",
+                    "station"
+                ],
+                "title": "EndpointType"
+            },
+            "FrequencyStep": {
+                "properties": {
+                    "from_index": {
+                        "type": "integer",
+                        "title": "From Index",
+                        "examples": [
+                            0
+                        ]
+                    },
+                    "to_index": {
+                        "type": "integer",
+                        "title": "To Index",
+                        "examples": [
+                            16
+                        ]
+                    },
+                    "frequency": {
+                        "type": "string",
+                        "title": "Frequency",
+                        "examples": [
+                            "0D3600S"
+                        ]
+                    },
+                    "step_offset": {
+                        "type": "string",
+                        "title": "Step Offset",
+                        "description": "",
+                        "examples": [
+                            "P0DT0H0M0S"
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "from_index",
+                    "to_index",
+                    "frequency",
+                    "step_offset"
+                ],
+                "title": "FrequencyStep"
+            },
+            "GeoJSONFeature": {
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "const": "Feature",
+                        "title": "Type",
+                        "default": "Feature"
+                    },
+                    "geometry": {
+                        "$ref": "#/components/schemas/GeoJSONPoint"
+                    },
+                    "properties": {
+                        "$ref": "#/components/schemas/GeoJSONFeatureProperties"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "geometry",
+                    "properties"
+                ],
+                "title": "GeoJSONFeature"
+            },
+            "GeoJSONFeatureParameter": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "examples": [
+                            "RR"
+                        ]
+                    },
+                    "unit": {
+                        "type": "string",
+                        "title": "Unit",
+                        "examples": [
+                            "kg m-2"
+                        ]
+                    },
+                    "data": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Data",
+                        "examples": [
+                            [
+                                9.0,
+                                0.0
+                            ]
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "unit",
+                    "data"
+                ],
+                "title": "GeoJSONFeatureParameter"
+            },
+            "GeoJSONFeatureProperties": {
+                "properties": {
+                    "parameters": {
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/GeoJSONFeatureParameter"
+                        },
+                        "type": "object",
+                        "title": "Parameters"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "parameters"
+                ],
+                "title": "GeoJSONFeatureProperties"
+            },
+            "GeoJSONPoint": {
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "const": "Point",
+                        "title": "Type",
+                        "default": "Point"
+                    },
+                    "coordinates": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "maxItems": 2,
+                        "minItems": 2,
+                        "title": "Coordinates",
+                        "description": "Point coordinates are in x, y order (easting, northing for projected coordinates, longitude, and latitude for geographic coordinates)",
+                        "examples": [
+                            [
+                                16.356388092041016,
+                                48.24861145019531
+                            ]
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "coordinates"
+                ],
+                "title": "GeoJSONPoint"
+            },
+            "GridForecastGeoJSONSerializer": {
+                "properties": {
+                    "reference_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Reference Time"
+                    },
+                    "media_type": {
+                        "type": "string",
+                        "const": "application/json",
+                        "title": "Media Type",
+                        "default": "application/json"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "FeatureCollection",
+                        "title": "Type",
+                        "default": "FeatureCollection"
+                    },
+                    "version": {
+                        "type": "string",
+                        "title": "Version"
+                    },
+                    "timestamps": {
+                        "items": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "type": "array",
+                        "title": "Timestamps",
+                        "description": "Format: *YYYY-MM-DDThh:mm:ss±hh:mm*"
+                    },
+                    "features": {
+                        "items": {
+                            "$ref": "#/components/schemas/GeoJSONFeature"
+                        },
+                        "type": "array",
+                        "title": "Features"
+                    },
+                    "filename": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Filename",
+                        "default": "Filename"
+                    },
+                    "bbox": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "maxItems": 4,
+                        "minItems": 4,
+                        "title": "Bbox"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "reference_time",
+                    "version",
+                    "timestamps",
+                    "features",
+                    "bbox"
+                ],
+                "title": "GridForecastGeoJSONSerializer"
+            },
+            "GridForecastMetadataModel": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "parameters": {
+                        "items": {
+                            "$ref": "#/components/schemas/ParameterMetadataModel"
+                        },
+                        "type": "array",
+                        "title": "Parameters"
+                    },
+                    "frequency": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/FrequencyStep"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Frequency"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Type"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "title": "Mode"
+                    },
+                    "response_formats": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Response Formats",
+                        "examples": [
+                            [
+                                "geojson",
+                                "netcdf"
+                            ]
+                        ]
+                    },
+                    "code_lists": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/CodeListItem"
+                                    },
+                                    "type": "array"
+                                },
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Code Lists",
+                        "examples": [
+                            {
+                                "c1": [
+                                    {
+                                        "key": 0,
+                                        "value": "Niederschlag gemessen"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "last_forecast_reftime": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Last Forecast Reftime"
+                    },
+                    "max_forecast_offset": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Max Forecast Offset"
+                    },
+                    "available_forecast_reftimes": {
+                        "items": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "type": "array",
+                        "title": "Available Forecast Reftimes"
+                    },
+                    "forecast_length": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Forecast Length"
+                    },
+                    "bbox": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "maxItems": 4,
+                        "minItems": 4,
+                        "title": "Bbox"
+                    },
+                    "bbox_outer": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "maxItems": 4,
+                        "minItems": 4,
+                        "title": "Bbox Outer"
+                    },
+                    "spatial_resolution": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "integer"
+                                        },
+                                        {
+                                            "type": "number"
+                                        }
+                                    ]
+                                },
+                                "type": "array"
+                            }
+                        ],
+                        "title": "Spatial Resolution",
+                        "examples": [
+                            1000,
+                            0.28,
+                            [
+                                0.28,
+                                0.09
+                            ]
+                        ]
+                    },
+                    "spatial_resolution_m": {
+                        "type": "integer",
+                        "title": "Spatial Resolution M",
+                        "description": "deprecated",
+                        "examples": [
+                            1000
+                        ]
+                    },
+                    "spatial_resolution_unit": {
+                        "type": "string",
+                        "title": "Spatial Resolution Unit",
+                        "examples": [
+                            "m",
+                            "deg"
+                        ]
+                    },
+                    "crs": {
+                        "type": "string",
+                        "title": "Crs",
+                        "examples": [
+                            "EPSG:4326"
+                        ]
+                    },
+                    "grid_bounds": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "maxItems": 4,
+                        "minItems": 4,
+                        "title": "Grid Bounds"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title",
+                    "parameters",
+                    "frequency",
+                    "type",
+                    "mode",
+                    "response_formats",
+                    "available_forecast_reftimes",
+                    "bbox",
+                    "bbox_outer",
+                    "spatial_resolution",
+                    "spatial_resolution_m",
+                    "spatial_resolution_unit",
+                    "crs",
+                    "grid_bounds"
+                ],
+                "title": "GridForecastMetadataModel"
+            },
+            "GridGeoJSONSerializer": {
+                "properties": {
+                    "media_type": {
+                        "type": "string",
+                        "const": "application/json",
+                        "title": "Media Type",
+                        "default": "application/json"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "FeatureCollection",
+                        "title": "Type",
+                        "default": "FeatureCollection"
+                    },
+                    "version": {
+                        "type": "string",
+                        "title": "Version"
+                    },
+                    "timestamps": {
+                        "items": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "type": "array",
+                        "title": "Timestamps",
+                        "description": "Format: *YYYY-MM-DDThh:mm:ss±hh:mm*"
+                    },
+                    "features": {
+                        "items": {
+                            "$ref": "#/components/schemas/GeoJSONFeature"
+                        },
+                        "type": "array",
+                        "title": "Features"
+                    },
+                    "filename": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Filename",
+                        "default": "Filename"
+                    },
+                    "bbox": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "maxItems": 4,
+                        "minItems": 4,
+                        "title": "Bbox"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "version",
+                    "timestamps",
+                    "features",
+                    "bbox"
+                ],
+                "title": "GridGeoJSONSerializer"
+            },
+            "GridHistoricalMetadataModel": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "parameters": {
+                        "items": {
+                            "$ref": "#/components/schemas/ParameterMetadataModel"
+                        },
+                        "type": "array",
+                        "title": "Parameters"
+                    },
+                    "frequency": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/FrequencyStep"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Frequency"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Type"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "title": "Mode"
+                    },
+                    "response_formats": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Response Formats",
+                        "examples": [
+                            [
+                                "geojson",
+                                "netcdf"
+                            ]
+                        ]
+                    },
+                    "code_lists": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/CodeListItem"
+                                    },
+                                    "type": "array"
+                                },
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Code Lists",
+                        "examples": [
+                            {
+                                "c1": [
+                                    {
+                                        "key": 0,
+                                        "value": "Niederschlag gemessen"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Start Time"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "End Time"
+                    },
+                    "bbox": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "maxItems": 4,
+                        "minItems": 4,
+                        "title": "Bbox"
+                    },
+                    "bbox_outer": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "maxItems": 4,
+                        "minItems": 4,
+                        "title": "Bbox Outer"
+                    },
+                    "spatial_resolution": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "integer"
+                                        },
+                                        {
+                                            "type": "number"
+                                        }
+                                    ]
+                                },
+                                "type": "array"
+                            }
+                        ],
+                        "title": "Spatial Resolution",
+                        "examples": [
+                            1000,
+                            0.28,
+                            [
+                                0.28,
+                                0.09
+                            ]
+                        ]
+                    },
+                    "spatial_resolution_m": {
+                        "type": "integer",
+                        "title": "Spatial Resolution M",
+                        "description": "deprecated",
+                        "examples": [
+                            1000
+                        ]
+                    },
+                    "spatial_resolution_unit": {
+                        "type": "string",
+                        "title": "Spatial Resolution Unit",
+                        "examples": [
+                            "m",
+                            "deg"
+                        ]
+                    },
+                    "crs": {
+                        "type": "string",
+                        "title": "Crs",
+                        "examples": [
+                            "EPSG:4326"
+                        ]
+                    },
+                    "grid_bounds": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array",
+                        "maxItems": 4,
+                        "minItems": 4,
+                        "title": "Grid Bounds"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title",
+                    "parameters",
+                    "frequency",
+                    "type",
+                    "mode",
+                    "response_formats",
+                    "start_time",
+                    "end_time",
+                    "bbox",
+                    "bbox_outer",
+                    "spatial_resolution",
+                    "spatial_resolution_m",
+                    "spatial_resolution_unit",
+                    "crs",
+                    "grid_bounds"
+                ],
+                "title": "GridHistoricalMetadataModel"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "IdType": {
+                "type": "string",
+                "enum": [
+                    "Synop",
+                    "Klima"
+                ],
+                "title": "IdType"
+            },
+            "MDType": {
+                "type": "string",
+                "enum": [
+                    "stations",
+                    "parameters"
+                ],
+                "title": "MDType"
+            },
+            "OutputFormat": {
+                "type": "string",
+                "enum": [
+                    "geojson",
+                    "netcdf",
+                    "csv"
+                ],
+                "title": "OutputFormat"
+            },
+            "ParameterMetadataModel": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "examples": [
+                            "RR"
+                        ]
+                    },
+                    "long_name": {
+                        "type": "string",
+                        "title": "Long Name",
+                        "examples": [
+                            "1-hour precipitation sum"
+                        ]
+                    },
+                    "desc": {
+                        "type": "string",
+                        "title": "Desc",
+                        "examples": [
+                            "1-hour precipitation sum"
+                        ]
+                    },
+                    "unit": {
+                        "type": "string",
+                        "title": "Unit",
+                        "examples": [
+                            "kg m-2"
+                        ]
+                    },
+                    "code_list_ref": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Code List Ref",
+                        "examples": [
+                            null,
+                            "c01"
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "long_name",
+                    "desc",
+                    "unit"
+                ],
+                "title": "ParameterMetadataModel"
+            },
+            "StationCurrentMetadataModel": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "parameters": {
+                        "items": {
+                            "$ref": "#/components/schemas/ParameterMetadataModel"
+                        },
+                        "type": "array",
+                        "title": "Parameters"
+                    },
+                    "frequency": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/FrequencyStep"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Frequency"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Type"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "title": "Mode"
+                    },
+                    "response_formats": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Response Formats",
+                        "examples": [
+                            [
+                                "geojson",
+                                "netcdf"
+                            ]
+                        ]
+                    },
+                    "code_lists": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/CodeListItem"
+                                    },
+                                    "type": "array"
+                                },
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Code Lists",
+                        "examples": [
+                            {
+                                "c1": [
+                                    {
+                                        "key": 0,
+                                        "value": "Niederschlag gemessen"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Time"
+                    },
+                    "stations": {
+                        "items": {
+                            "$ref": "#/components/schemas/StationMetadata"
+                        },
+                        "type": "array",
+                        "title": "Stations"
+                    },
+                    "id_type": {
+                        "$ref": "#/components/schemas/IdType"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title",
+                    "parameters",
+                    "frequency",
+                    "type",
+                    "mode",
+                    "response_formats",
+                    "time",
+                    "stations",
+                    "id_type"
+                ],
+                "title": "StationCurrentMetadataModel"
+            },
+            "StationFilterEndpointMode": {
+                "type": "string",
+                "enum": [
+                    "historical",
+                    "current"
+                ],
+                "title": "StationFilterEndpointMode"
+            },
+            "StationFilterResponseDto": {
+                "properties": {
+                    "num_stations_total": {
+                        "type": "integer",
+                        "title": "Num Stations Total"
+                    },
+                    "num_stations_matching": {
+                        "type": "integer",
+                        "title": "Num Stations Matching"
+                    },
+                    "matching_stations": {
+                        "items": {
+                            "$ref": "#/components/schemas/StationMetadataDto"
+                        },
+                        "type": "array",
+                        "title": "Matching Stations"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "num_stations_total",
+                    "num_stations_matching",
+                    "matching_stations"
+                ],
+                "title": "StationFilterResponseDto"
+            },
+            "StationGeoJSONFeature": {
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "const": "Feature",
+                        "title": "Type",
+                        "default": "Feature"
+                    },
+                    "geometry": {
+                        "$ref": "#/components/schemas/GeoJSONPoint"
+                    },
+                    "properties": {
+                        "$ref": "#/components/schemas/StationGeoJSONProperties"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "geometry",
+                    "properties"
+                ],
+                "title": "StationGeoJSONFeature"
+            },
+            "StationGeoJSONProperties": {
+                "properties": {
+                    "parameters": {
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/GeoJSONFeatureParameter"
+                        },
+                        "type": "object",
+                        "title": "Parameters"
+                    },
+                    "station": {
+                        "type": "string",
+                        "title": "Station"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "parameters",
+                    "station"
+                ],
+                "title": "StationGeoJSONProperties"
+            },
+            "StationGeoJSONSerializer": {
+                "properties": {
+                    "media_type": {
+                        "type": "string",
+                        "const": "application/json",
+                        "title": "Media Type",
+                        "default": "application/json"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "FeatureCollection",
+                        "title": "Type",
+                        "default": "FeatureCollection"
+                    },
+                    "version": {
+                        "type": "string",
+                        "title": "Version"
+                    },
+                    "timestamps": {
+                        "items": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "type": "array",
+                        "title": "Timestamps",
+                        "description": "Format: *YYYY-MM-DDThh:mm:ss±hh:mm*"
+                    },
+                    "features": {
+                        "items": {
+                            "$ref": "#/components/schemas/StationGeoJSONFeature"
+                        },
+                        "type": "array",
+                        "title": "Features"
+                    },
+                    "filename": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Filename",
+                        "default": "Filename"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "version",
+                    "timestamps",
+                    "features"
+                ],
+                "title": "StationGeoJSONSerializer"
+            },
+            "StationHistoricalMetadataModel": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "parameters": {
+                        "items": {
+                            "$ref": "#/components/schemas/ParameterMetadataModel"
+                        },
+                        "type": "array",
+                        "title": "Parameters"
+                    },
+                    "frequency": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/FrequencyStep"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Frequency"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Type"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "title": "Mode"
+                    },
+                    "response_formats": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Response Formats",
+                        "examples": [
+                            [
+                                "geojson",
+                                "netcdf"
+                            ]
+                        ]
+                    },
+                    "code_lists": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/CodeListItem"
+                                    },
+                                    "type": "array"
+                                },
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Code Lists",
+                        "examples": [
+                            {
+                                "c1": [
+                                    {
+                                        "key": 0,
+                                        "value": "Niederschlag gemessen"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Start Time"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "End Time"
+                    },
+                    "stations": {
+                        "items": {
+                            "$ref": "#/components/schemas/StationMetadata"
+                        },
+                        "type": "array",
+                        "title": "Stations"
+                    },
+                    "id_type": {
+                        "$ref": "#/components/schemas/IdType"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title",
+                    "parameters",
+                    "frequency",
+                    "type",
+                    "mode",
+                    "response_formats",
+                    "start_time",
+                    "end_time",
+                    "stations",
+                    "id_type"
+                ],
+                "title": "StationHistoricalMetadataModel"
+            },
+            "StationMetadata": {
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/StationMetadataType",
+                        "examples": [
+                            "INDIVIDUAL"
+                        ]
+                    },
+                    "id": {
+                        "type": "string",
+                        "title": "Id",
+                        "examples": [
+                            5904
+                        ]
+                    },
+                    "group_id": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Group Id",
+                        "examples": [
+                            105
+                        ]
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "examples": [
+                            "WIEN-HOHE WARTE"
+                        ]
+                    },
+                    "state": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Bundesland"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "examples": [
+                            "Wien"
+                        ]
+                    },
+                    "lat": {
+                        "type": "number",
+                        "title": "Lat",
+                        "examples": [
+                            48.248611
+                        ]
+                    },
+                    "lon": {
+                        "type": "number",
+                        "title": "Lon",
+                        "examples": [
+                            16.356388
+                        ]
+                    },
+                    "altitude": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Altitude",
+                        "examples": [
+                            198.0
+                        ]
+                    },
+                    "valid_from": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Valid From",
+                        "examples": [
+                            "1992-11-05T00:00:00"
+                        ]
+                    },
+                    "valid_to": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Valid To",
+                        "examples": [
+                            "2100-12-31T00:00:00"
+                        ]
+                    },
+                    "has_sunshine": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Has Sunshine",
+                        "examples": [
+                            true
+                        ]
+                    },
+                    "has_global_radiation": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Has Global Radiation",
+                        "examples": [
+                            true
+                        ]
+                    },
+                    "is_active": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Is Active",
+                        "examples": [
+                            true
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "type",
+                    "id",
+                    "name",
+                    "lat",
+                    "lon",
+                    "valid_from",
+                    "valid_to"
+                ],
+                "title": "StationMetadata"
+            },
+            "StationMetadataDto": {
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/StationMetadataType"
+                    },
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "state": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Bundesland"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "lat": {
+                        "type": "number",
+                        "title": "Lat"
+                    },
+                    "lon": {
+                        "type": "number",
+                        "title": "Lon"
+                    },
+                    "altitude": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Altitude"
+                    },
+                    "valid_from": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Valid From"
+                    },
+                    "valid_to": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Valid To"
+                    },
+                    "has_sunshine": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Has Sunshine"
+                    },
+                    "has_global_radiation": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Has Global Radiation"
+                    },
+                    "is_active": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Is Active"
+                    },
+                    "sub_stations": {
+                        "items": {
+                            "$ref": "#/components/schemas/StationMetadataDto"
+                        },
+                        "type": "array",
+                        "title": "Sub Stations",
+                        "description": "List of sub-stations of this station. Only populated if type == COMBINED.",
+                        "default": []
+                    },
+                    "matches": {
+                        "type": "boolean",
+                        "title": "Matches",
+                        "default": true
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "type",
+                    "id",
+                    "name",
+                    "lat",
+                    "lon",
+                    "valid_from",
+                    "valid_to"
+                ],
+                "title": "StationMetadataDto"
+            },
+            "StationMetadataType": {
+                "type": "string",
+                "enum": [
+                    "COMBINED",
+                    "SUB_STATION",
+                    "INDIVIDUAL"
+                ],
+                "title": "StationMetadataType"
+            },
+            "TimeseriesForecastGeoJSONSerializer": {
+                "properties": {
+                    "reference_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Reference Time"
+                    },
+                    "media_type": {
+                        "type": "string",
+                        "const": "application/json",
+                        "title": "Media Type",
+                        "default": "application/json"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "FeatureCollection",
+                        "title": "Type",
+                        "default": "FeatureCollection"
+                    },
+                    "version": {
+                        "type": "string",
+                        "title": "Version"
+                    },
+                    "timestamps": {
+                        "items": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "type": "array",
+                        "title": "Timestamps",
+                        "description": "Format: *YYYY-MM-DDThh:mm:ss±hh:mm*"
+                    },
+                    "features": {
+                        "items": {
+                            "$ref": "#/components/schemas/GeoJSONFeature"
+                        },
+                        "type": "array",
+                        "title": "Features"
+                    },
+                    "filename": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Filename",
+                        "default": "Filename"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "reference_time",
+                    "version",
+                    "timestamps",
+                    "features"
+                ],
+                "title": "TimeseriesForecastGeoJSONSerializer"
+            },
+            "TimeseriesGeoJSONSerializer": {
+                "properties": {
+                    "media_type": {
+                        "type": "string",
+                        "const": "application/json",
+                        "title": "Media Type",
+                        "default": "application/json"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "FeatureCollection",
+                        "title": "Type",
+                        "default": "FeatureCollection"
+                    },
+                    "version": {
+                        "type": "string",
+                        "title": "Version"
+                    },
+                    "timestamps": {
+                        "items": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "type": "array",
+                        "title": "Timestamps",
+                        "description": "Format: *YYYY-MM-DDThh:mm:ss±hh:mm*"
+                    },
+                    "features": {
+                        "items": {
+                            "$ref": "#/components/schemas/GeoJSONFeature"
+                        },
+                        "type": "array",
+                        "title": "Features"
+                    },
+                    "filename": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Filename",
+                        "default": "Filename"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "version",
+                    "timestamps",
+                    "features"
+                ],
+                "title": "TimeseriesGeoJSONSerializer"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}
