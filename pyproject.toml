@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "geodatasets>=2026.1.0",
     "geopandas>=1.1.2",
+    "geopy>=2.4.1",
     "matplotlib>=3.10.8",
     "pandas>=3.0.0",
     "pydantic>=2.13.2",
@@ -24,3 +25,6 @@ dev = [
 
 [tool.ty.environment]
 python = "./.venv"  # seems unnessecary, but pre-commit fails otherwise (even if it works in the console)
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

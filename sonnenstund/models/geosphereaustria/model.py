@@ -107,7 +107,7 @@ class StationFilterEndpointMode(Enum):
 
 class StationGeoJSONProperties(BaseModel):
     parameters: dict[str, GeoJSONFeatureParameter] = Field(..., title="Parameters")
-    station: str = Field(..., title="Station")
+    station: int = Field(..., title="Station")
 
 
 class StationMetadataType(Enum):
