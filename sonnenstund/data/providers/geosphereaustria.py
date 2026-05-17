@@ -1,3 +1,5 @@
+"""GeoSphere Austria provider implementation for historical weather data."""
+
 from typing import Any, Self
 
 import requests
@@ -26,7 +28,6 @@ logger = logging.getLogger(__name__)
 
 BASE_URL: str = "https://dataset.api.hub.geosphere.at/v1"
 
-# TODO: add docstrings and type hints to all functions and classes in this file
 # For all points, we store them in longitude, latitude format (EPSG:4326), which is the format used by GeoPandas
 
 PARAMETER_MAPPING: dict[Parameter, str] = {
@@ -44,6 +45,14 @@ REVERSE_QUALITY_PARAMETER_MAPPING: dict[str, str] = {
 
 
 def _map_quality_flag(flag: float | None) -> Quality:
+    """Map an API quality flag to an internal Quality value.
+
+    Args:
+        flag (float | None): Raw quality flag from the API.
+
+    Returns:
+        Quality: Internal quality classification.
+    """
     if flag is None:
         return Quality.UNKNOWN
     if flag < 10:
@@ -63,6 +72,14 @@ PARAMETER_FUNCTIONS = {
 
 @cache
 def _station_historical_metadata() -> StationHistoricalMetadataModel:
+    """Fetch station historical metadata from the GeoSphere Austria API.
+
+    Returns:
+        StationHistoricalMetadataModel: Parsed station metadata response.
+
+    Raises:
+        Exception: Propagates any exception raised during the API request.
+    """
     logger.info("Fetching station historical metadata from GeoSphere Austria API")
     try:
         response = requests.get(
@@ -78,12 +95,22 @@ def _station_historical_metadata() -> StationHistoricalMetadataModel:
 
 @cache
 def _stations() -> list[StationMetadata]:
+    """Return active station metadata from cached API metadata.
+
+    Returns:
+        list[StationMetadata]: Active stations from GeoSphere Austria.
+    """
     logger.info("Fetching station metadata from GeoSphere Austria API")
     return [s for s in _station_historical_metadata().stations if s.is_active]
 
 
 @cache
 def _stations_locations() -> list[Point]:
+    """Return point geometries for each active station.
+
+    Returns:
+        list[Point]: Station locations in longitude/latitude order.
+    """
     # GeoSphere Austria stores locations in latitude and longitude (EPSG:4326)
     # GeoPandas stores locations in longitute, latitude format
     logger.info("Extracting station locations from station metadata")
@@ -91,6 +118,15 @@ def _stations_locations() -> list[Point]:
 
 
 def _distance(point1: Point, point2: Point) -> Distance:
+    """Return the geodesic distance between two points.
+
+    Args:
+        point1 (Point): First location in longitude/latitude order.
+        point2 (Point): Second location in longitude/latitude order.
+
+    Returns:
+        Distance: Geodesic distance between the two points.
+    """
     logger.info(
         f"Calculating geodesic distance between two points: {point1} and {point2}"
     )
@@ -99,6 +135,15 @@ def _distance(point1: Point, point2: Point) -> Distance:
 
 
 def _nearest_points(point: Point, points: list[Point]) -> Point | None:
+    """Find the closest point from a list of candidate points.
+
+    Args:
+        point (Point): Reference location.
+        points (list[Point]): Candidate locations.
+
+    Returns:
+        Point | None: The nearest point, or None if no candidates are provided.
+    """
     if len(points) == 0:
         logger.info("No points provided to find nearest point, returning None")
         return None
@@ -117,6 +162,17 @@ def _nearest_points(point: Point, points: list[Point]) -> Point | None:
 
 
 def _get_closest_station(location: Point) -> StationMetadata:
+    """Return the metadata for the station closest to the given location.
+
+    Args:
+        location (Point): Reference location in longitude/latitude order.
+
+    Returns:
+        StationMetadata: Metadata for the closest active station.
+
+    Raises:
+        ValueError: If no station can be found for the location.
+    """
     logger.info(f"Finding closest station to location: {location}")
     closest_station_location = _nearest_points(location, _stations_locations())
     # pick first station with the same location as the closest station location (there can be multiple stations at the same location, but we only need one of them)
@@ -158,22 +214,35 @@ def _get_stations_within_radius(
 
 
 class _GeoSphereAustriaHistoricalStationLocationData(LocationData):
+    """Historical location data returned by the GeoSphere Austria provider."""
+
     def __init__(self, data: pd.DataFrame):
         self.data = data
         super().__init__()
 
     @property
     def geopandas_df(self) -> gpd.GeoDataFrame:
+        """Return the data as a GeoPandas GeoDataFrame."""
         return gpd.GeoDataFrame(self.data)
 
     @property
     def df(self) -> pd.DataFrame:
+        """Return the data as a pandas DataFrame."""
         return self.data
 
     @classmethod
     def _from_api_response(
         cls, response: StationGeoJSONSerializer, api_parameters: set[str]
     ) -> Self:
+        """Build a station location data container from API response data.
+
+        Args:
+            response (StationGeoJSONSerializer): Parsed API response.
+            api_parameters (set[str]): API parameter keys contained in the response.
+
+        Returns:
+            _GeoSphereAustriaHistoricalStationLocationData: Data container with mapped values.
+        """
         quality_parameters = {
             p for p in api_parameters if p in REVERSE_QUALITY_PARAMETER_MAPPING
         }
@@ -215,18 +284,20 @@ def _get_data_for_stations(
     parameters: list[Parameter],
     quality: bool = False,
 ) -> _GeoSphereAustriaHistoricalStationLocationData:
-    """Query the GeoSphere Austria API to get location data for a list of stations.
+    """Query the GeoSphere Austria API to retrieve station data.
+
     If a parameter is not supported by the API, it will be skipped and a warning will be logged.
     If no valid parameters are provided, a ValueError will be raised.
 
     Args:
-        stations (list[StationMetadata]): list of stations for which to retrieve data
-        time_from (date): start of the time range for which to retrieve data
-        time_to (date): end of the time range for which to retrieve data
-        parameters (list[Parameter]): list of parameters to retrieve data for
+        stations (list[StationMetadata]): Stations from which to retrieve data.
+        time_from (date): Start of the query interval.
+        time_to (date): End of the query interval.
+        parameters (list[Parameter]): Requested data parameters.
+        quality (bool, optional): Whether to include quality values. Defaults to False.
 
     Returns:
-        _GeoSphereAustriaHistoricalStationLocationData: The retrieved location weather data for the specified stations and time range
+        _GeoSphereAustriaHistoricalStationLocationData: The retrieved historical station data.
     """
     logger.info(
         f"Retrieving data for stations: {[station.name for station in stations]} from {time_from} to {time_to} for parameters: {parameters} with quality: {quality}"
@@ -261,6 +332,8 @@ def _get_data_for_stations(
 
 
 class _GeoSphereAustria(DataProvider):
+    """GeoSphere Austria data provider implementation."""
+
     @staticmethod
     def get_historical_location_data(
         time_from: date,
@@ -270,6 +343,25 @@ class _GeoSphereAustria(DataProvider):
         radius: float | None = None,
         quality: bool = False,
     ) -> LocationData:
+        """Return historical location data for requested locations.
+
+        Args:
+            time_from (date): Start of the requested interval.
+            time_to (date): End of the requested interval.
+            locations (Point | list[Point]): One or more locations to query.
+            parameters (list[Parameter]): Requested weather parameters.
+            radius (float | None, optional): Search radius in kilometers when a single
+                location is provided. Defaults to None.
+            quality (bool, optional): Include quality information if available.
+                Defaults to False.
+
+        Returns:
+            LocationData: Retrieved data container.
+
+        Raises:
+            ValueError: For invalid combinations of locations and radius, or if
+                the location list is empty.
+        """
         logger.info(
             f"Getting historical location data from GeoSphere Austria API for time range {time_from} to {time_to}, locations: {locations}, parameters: {parameters}, radius: {radius}, quality: {quality}"
         )

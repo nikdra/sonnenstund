@@ -7,30 +7,34 @@ import pandas as pd
 
 
 class Parameter(StrEnum):
-    """Accepted parameters for Data Providers.
-    These are weather data that can be queried:
-    SUN_HOURS: number of hours the sun has shined
+    """Accepted query parameters for data providers.
 
-    Args:
-        StrEnum (_type_): _description_
+    Attributes:
+        SUN_HOURS: Number of hours the sun has shined.
     """
 
     SUN_HOURS = auto()
 
 
 class LocationData(ABC):
+    """Abstract base class for location-specific data results."""
+
     @property
     @abstractmethod
     def df(self) -> pd.DataFrame:
+        """Return the data as a pandas DataFrame."""
         raise NotImplementedError("This method must be implemented by subclasses.")
 
     @property
     @abstractmethod
     def geopandas_df(self) -> GeoDataFrame:
+        """Return the data as a GeoPandas GeoDataFrame."""
         raise NotImplementedError("This method must be implemented by subclasses.")
 
 
 class DataProvider(ABC):
+    """Abstract base for data provider implementations."""
+
     @staticmethod
     @abstractmethod
     def get_historical_location_data(
