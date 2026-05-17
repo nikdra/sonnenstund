@@ -63,30 +63,46 @@ PARAMETER_FUNCTIONS = {
 
 @cache
 def _station_historical_metadata() -> StationHistoricalMetadataModel:
-    response = requests.get(
-        f"{BASE_URL}/station/historical/klima-v2-1d/metadata"
-    ).json()
-    return StationHistoricalMetadataModel(**response)
+    logger.info("Fetching station historical metadata from GeoSphere Austria API")
+    try:
+        response = requests.get(
+            f"{BASE_URL}/station/historical/klima-v2-1d/metadata"
+        ).json()
+        return StationHistoricalMetadataModel(**response)
+    except Exception as e:
+        logger.error(
+            f"Error fetching station historical metadata from GeoSphere Austria API: {e}"
+        )
+        raise e
 
 
 @cache
 def _stations() -> list[StationMetadata]:
-    return _station_historical_metadata().stations
+    logger.info("Fetching station metadata from GeoSphere Austria API")
+    return [s for s in _station_historical_metadata().stations if s.is_active]
 
 
 @cache
 def _stations_locations() -> list[Point]:
     # GeoSphere Austria stores locations in latitude and longitude (EPSG:4326)
     # GeoPandas stores locations in longitute, latitude format
+    logger.info("Extracting station locations from station metadata")
     return [Point(station.lon, station.lat) for station in _stations()]
 
 
 def _distance(point1: Point, point2: Point) -> Distance:
+    logger.info(
+        f"Calculating geodesic distance between two points: {point1} and {point2}"
+    )
     # Points must be in (latitude, longitude) format for geodesic distance calculation, but GeoPandas stores locations in longitute, latitude format
     return geodesic((point1.y, point1.x), (point2.y, point2.x))
 
 
 def _nearest_points(point: Point, points: list[Point]) -> Point | None:
+    if len(points) == 0:
+        logger.info("No points provided to find nearest point, returning None")
+        return None
+    logger.info(f"Finding nearest points to a given location: {point}")
     closest_point = None
     closest_distance = None
     for p in points:
@@ -94,10 +110,14 @@ def _nearest_points(point: Point, points: list[Point]) -> Point | None:
         if closest_distance is None or distance < closest_distance:
             closest_distance = distance
             closest_point = p
+    logger.info(
+        f"Closest point to {point} is {closest_point} with a distance of {closest_distance}"
+    )
     return closest_point
 
 
-def _get_closest_station(location: Point) -> StationMetadata | None:
+def _get_closest_station(location: Point) -> StationMetadata:
+    logger.info(f"Finding closest station to location: {location}")
     closest_station_location = _nearest_points(location, _stations_locations())
     # pick first station with the same location as the closest station location (there can be multiple stations at the same location, but we only need one of them)
     closest_station = next(
@@ -108,7 +128,11 @@ def _get_closest_station(location: Point) -> StationMetadata | None:
         ),
         None,
     )
-    return closest_station
+    if closest_station is not None:
+        logger.info(f"Closest station to {location} is {closest_station.name}")
+        return closest_station
+    logger.error(f"No station found for location {location}")
+    raise ValueError(f"No station found for location {location}")
 
 
 def _get_stations_within_radius(
@@ -123,6 +147,9 @@ def _get_stations_within_radius(
     Returns:
         list[StationMetadata]: list of stations within the specified radius
     """
+    logger.info(
+        f"Finding stations within a radius of {radius} km from location: {location}"
+    )
     return [
         station
         for station, station_location in zip(_stations(), _stations_locations())
@@ -201,6 +228,9 @@ def _get_data_for_stations(
     Returns:
         _GeoSphereAustriaHistoricalStationLocationData: The retrieved location weather data for the specified stations and time range
     """
+    logger.info(
+        f"Retrieving data for stations: {[station.name for station in stations]} from {time_from} to {time_to} for parameters: {parameters} with quality: {quality}"
+    )
     station_ids = ",".join([str(station.id) for station in stations])
     mapped_parameters: set[str] = set()
     for p in parameters:
@@ -240,6 +270,9 @@ class _GeoSphereAustria(DataProvider):
         radius: float | None = None,
         quality: bool = False,
     ) -> LocationData:
+        logger.info(
+            f"Getting historical location data from GeoSphere Austria API for time range {time_from} to {time_to}, locations: {locations}, parameters: {parameters}, radius: {radius}, quality: {quality}"
+        )
         if isinstance(locations, Point):
             locations = [locations]
         if len(locations) == 0:
@@ -274,4 +307,7 @@ class _GeoSphereAustria(DataProvider):
                 parameters=parameters,
                 quality=quality,
             )
+        logger.error(
+            "Invalid combination of parameters provided for GeoSphere Austria API"
+        )
         raise ValueError("Invalid combination of parameters.")

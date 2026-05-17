@@ -10,11 +10,8 @@ from sonnenstund.models.geosphereaustria.model import (
 )
 from sonnenstund.data import Parameter
 
-# TODO append with real life values once the implementation is done and the tests are working with mocked data.
-# TODO add more test cases for quality parameters
 # TODO modify tests to check for nan values
 # TODO modify tests to check if the column names are correct (mostly for the quality parameters)
-# TODO modify tests to check the geodataframe
 
 
 @pytest.fixture
@@ -96,7 +93,7 @@ def test_closest_station_non_station_location(non_station_location: Point):
 
 def test_stations_within_radius(location: Point):
     stations = geosphere_austria._get_stations_within_radius(location, 5)
-    assert len(stations) == 7
+    assert len(stations) == 2
     assert all(station.state == Bundesland.Wien for station in stations)
     pass
 
@@ -136,6 +133,22 @@ def test_get_historical_location_data(location: Point):
         parameters=[Parameter.SUN_HOURS],
     )
     assert len(data.df) == 31
+    assert ["date", "geometry", "sun_hours"] == list(data.df.columns)
+    pass
+
+
+def test_get_historical_location_data_quality(location: Point):
+    data = geosphere_austria._GeoSphereAustria.get_historical_location_data(
+        datetime.combine(date(2020, 1, 1), datetime.min.time()),
+        datetime.combine(date(2020, 1, 31), datetime.min.time()),
+        location,
+        parameters=[Parameter.SUN_HOURS],
+        quality=True,
+    )
+    assert len(data.df) == 31
+    assert ["date", "geometry", "sun_hours", "sun_hours_quality"] == list(
+        data.df.columns
+    )
     pass
 
 
@@ -147,6 +160,22 @@ def test_get_historical_location_data_multiple(locations: list[Point]):
         parameters=[Parameter.SUN_HOURS],
     )
     assert len(data.df) == 62
+    assert ["date", "geometry", "sun_hours"] == list(data.df.columns)
+    pass
+
+
+def test_get_historical_location_data_multiple_quality(locations: list[Point]):
+    data = geosphere_austria._GeoSphereAustria.get_historical_location_data(
+        datetime.combine(date(2020, 1, 1), datetime.min.time()),
+        datetime.combine(date(2020, 1, 31), datetime.min.time()),
+        locations,
+        parameters=[Parameter.SUN_HOURS],
+        quality=True,
+    )
+    assert len(data.df) == 62
+    assert ["date", "geometry", "sun_hours", "sun_hours_quality"] == list(
+        data.df.columns
+    )
     pass
 
 
@@ -205,5 +234,24 @@ def test_get_historical_location_data_single_location_with_radius(location: Poin
         radius=5,
         parameters=[Parameter.SUN_HOURS],
     )
-    assert len(data.df) == 217
+    assert len(data.df) == 62
+    assert ["date", "geometry", "sun_hours"] == list(data.df.columns)
+    pass
+
+
+def test_get_historical_location_data_single_location_with_radius_quality(
+    location: Point,
+):
+    data = geosphere_austria._GeoSphereAustria.get_historical_location_data(
+        datetime.combine(date(2020, 1, 1), datetime.min.time()),
+        datetime.combine(date(2020, 1, 31), datetime.min.time()),
+        location,
+        radius=5,
+        parameters=[Parameter.SUN_HOURS],
+        quality=True,
+    )
+    assert len(data.df) == 62
+    assert ["date", "geometry", "sun_hours", "sun_hours_quality"] == list(
+        data.df.columns
+    )
     pass
