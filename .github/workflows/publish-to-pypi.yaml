@@ -32,14 +32,6 @@ jobs:
           name: python-package-distributions
           path: dist/
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ github.ref_name }}
-          draft: true
-          prerelease: false
-          files: dist/*.tar.gz
-
   publish-to-testpypi:
     name: Publish Python 🐍 distribution 📦 to TestPyPI
     needs:
