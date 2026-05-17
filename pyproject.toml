@@ -35,7 +35,7 @@ Homepage = "https://github.com/nikdra/sonnenstund"
 Issues = "https://github.com/nikdra/sonnenstund/issues"
 
 [build-system]
-requires = ["setuptools >= 77.0.3"]
+requires = ["setuptools>=80", "setuptools-scm[simple]>=9.2"]
 build-backend = "setuptools.build_meta"
 
 [tool.ty.environment]
