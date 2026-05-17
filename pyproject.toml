@@ -1,14 +1,22 @@
 [project]
 name = "sonnenstund"
-version = "0.1.0"
-description = "Add your description here"
+authors = [
+    { name= "Nikola Dragovic" }
+]
+license = "MIT"
+description = "A simple Python package to get sunshine data"
 readme = "README.md"
 requires-python = ">=3.13"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license-files = ["LICENSE"]
+dynamic = ["version"]
+
 dependencies = [
-    "geodatasets>=2026.1.0",
     "geopandas>=1.1.2",
     "geopy>=2.4.1",
-    "matplotlib>=3.10.8",
     "pandas>=3.0.0",
     "pydantic>=2.13.2",
     "requests>=2.32.5",
@@ -16,15 +24,26 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "ipykernel>=7.2.0",
     "pre-commit>=4.5.1",
     "pytest>=9.0.3",
     "pytest-cov>=7.1.0",
     "ty>=0.0.31",
 ]
 
+[project.urls]
+Homepage = "https://github.com/nikdra/sonnenstund"
+Issues = "https://github.com/nikdra/sonnenstund/issues"
+
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
 [tool.ty.environment]
 python = "./.venv"  # seems unnessecary, but pre-commit fails otherwise (even if it works in the console)
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.setuptools.packages.find]
+include = ["sonnenstund", "sonnenstund.*"]
+exclude = ["tests", "tests.*", "sonnenstund.json"]
